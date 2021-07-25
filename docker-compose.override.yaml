@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  db:
+    environment:
+      POSTGRES_USER: teacher
+      POSTGRES_PASSWORD: teacher123
+      POSTGRES_DB: teacher_db
+    volumes:
+      - ./postgres-data/postgres:/var/lib/postgresql/data
+    expose:
+      - "5435"
+    ports:
+      - "5435:5435"
+    command: -p 5435
+  web:
+    build: .
+    command: python3 /code/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code/
+    ports:
+      - 8000:8000
+
