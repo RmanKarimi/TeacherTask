@@ -16,7 +16,7 @@ The recommended way for running the project locally and for development is using
 
 ## Docker Setup
 
-This project is set up to run using [Docker Compose](https://docs.docker.com/compose/) by default. It is the recommended way. You can also use existing Docker Compose files as basis for custom deployment, e.g. [Docker Swarm](https://docs.docker.com/engine/swarm/), [kubernetes](https://kubernetes.io/), etc.
+This project is set up to run using [Docker Compose](https://docs.docker.com/compose/) by default. It is the recommended way. You can also use existing Docker Compose files as basis for custom deployment
 
 1. Install Docker:
    - Linux - [get.docker.com](https://get.docker.com/)
