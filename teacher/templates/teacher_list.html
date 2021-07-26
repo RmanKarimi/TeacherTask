@@ -17,12 +17,13 @@
     {% endfor %}
     {% endif %}
 
-
 <div class="input-group">
-  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-    aria-describedby="search-addon" />
-  <button type="button" class="btn btn-outline-primary">search</button>
+  <form method="get">
+    {{ filter.form }}
+    <button type="submit" class="btn btn-outline-primary">search</button>
+    </form>
 </div>
+
 
 </br>
 
@@ -60,6 +61,7 @@
 <div class="modal fade" id="csventry" tabindex="-1" role="dialog" aria-labelledby="csventry" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <form method="post" enctype="multipart/form-data" action="{% url 'teacher_list' %}">
+    {% csrf_token %}
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Upload CSV</h5>
@@ -72,9 +74,8 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
           </div>
-        {% csrf_token %}
           <div class="custom-file">
-            <input type="file" class="custom-file-input" name="myfile"
+            <input type="file" class="custom-file-input" name="myfile" id="inputGroupFile02"
               aria-describedby="inputGroupFileAddon01">
             <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
           </div>
@@ -88,5 +89,4 @@
     </form>
   </div>
 </div>
-
 {% endblock container %}

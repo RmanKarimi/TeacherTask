@@ -2,18 +2,33 @@ from django.shortcuts import render, redirect
 from .models import Teacher
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+import csv
+import io
+from django.conf import settings
+from django.contrib.staticfiles import finders
+from .filters import TeacherFilters
+
 
 def teacher(request):
+    teacher = Teacher.objects.all()
+    context = {
+        'teacher': teacher
+    }
     if request.method == 'POST' and request.FILES['myfile']:
-        print('+++++++++++   user wants to upload csv')
-        uploaded_file = request.FILES['myfile'].read()
-        upload_csv(uploaded_file)
-    elif request.method == 'GET' and request.GET.get('lastname'):
-        last_name = request.GET.get('lastname')
-        teacher = Teacher.objects.filter(last_name__contains=last_name)
+        if request.user.is_authenticated:
+            uploaded_file = request.FILES['myfile'].read().decode('utf-8')
+            csv_file = io.StringIO(uploaded_file)
+            upload_csv(csv_file)
+        else:
+            messages.error(request, _('only authenticated users can upload CSV file'))
     else:
-        teacher = Teacher.objects.all()
-    return render(request, 'teacher_list.html', {'teacher': teacher})
+        filter = TeacherFilters(request.GET or None, queryset=teacher)
+        teacher = filter.qs
+        context = {
+            'teacher': teacher,
+            'filter': filter
+        }
+    return render(request, 'teacher_list.html', context=context)
 
 
 def teacher_detail(request, teacher_id):
@@ -37,16 +52,16 @@ def uploadfile(request):
 
 
 def upload_csv(csv_file):
-    print('------->  uplpad csv method\n')
     print(csv_file)
-    with open(csv_file, 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            _, created = Teacher.objects.get_or_create(
-                first_name=row[0],
-                last_name=row[1],
-                email_address=row[3],
-                phone_number=row[4],
-                room_number=row[5],
-                subject_taught=row[6],
-            )
+    for line in csv.reader(csv_file, delimiter=','):
+        image_url = '/images/'+line[2]
+        teacher = Teacher(
+                    first_name=line[0],
+                    last_name=line[1],
+                    profile_picture=image_url,
+                    email_address=line[3],
+                    phone_number=line[4],
+                    room_number=line[5],
+                    subject_taught=line[6],
+                )
+        teacher.save()
