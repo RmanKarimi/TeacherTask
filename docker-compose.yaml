@@ -7,5 +7,5 @@ services:
     restart: always
     depends_on:
       - "db"
-    command: [ "./wait-for-it.sh", "db:5435", "--", "python", "app.py" ]
+    command: ["db:5435", "--", "python", "app.py" ]
 
